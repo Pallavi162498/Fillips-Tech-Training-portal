@@ -33,7 +33,7 @@ export const updateInstructor = async(req, res) => {
                 if (instructorFields.includes(key)) instructorUpdate[key] = data[key];
             });
     
-            const instructor = await Instructor.findOne({ userId: id });
+            const instructor = await Instructor.findOne({ userId: id});
             if (!instructor) {
                 return res.status(404).json({ 
                     message: "Instructor not found",

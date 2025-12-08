@@ -27,6 +27,14 @@ const batchSchema = new mongoose.Schema ({
         type: String,
         required: true,
     },
+    startDate: {
+        type: Date,
+        required: true,
+    },
+    endDate: {
+        type: Date,
+        required: true,
+    },
     mode: {
         type: String,
         enum: ["Online", "Offline"],

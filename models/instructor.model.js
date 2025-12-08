@@ -19,7 +19,7 @@ const instructorSchema = new mongoose.Schema({
           unique: true,  
         }
     ],
-    module: [
+    classId: [
         {
             type: String,
             required: true
