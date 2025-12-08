@@ -103,7 +103,7 @@ export const getAllStudent = async(req, res) => {
 export const getStudentById = async(req, res) => {
      try {
         const {userId} = req.params;
-        const studentData = await User.findOne({id: userId})
+        const studentData = await Student.findOne({userId})
         const pipeline = [
             {$match: {userId}},
             {
@@ -166,7 +166,13 @@ export const updateStudent = async (req, res) => {
     try {
         const { userId } = req.params;
         const data = req.body;
-
+        const student = await User.findOne({ id: userId });
+        if (!student) {
+            return res.status(404).json({ 
+                message: "Student not found",
+                success: false,
+            });
+        }
         const userFields = ["firstName", "lastName", "email", "phone", "location"];
         const studentFields = ["batchId", "courseId", "mode", "status"];
 
@@ -177,19 +183,10 @@ export const updateStudent = async (req, res) => {
             if (userFields.includes(key)) userUpdate[key] = data[key];
             if (studentFields.includes(key)) studentUpdate[key] = data[key];
         });
-
-        const student = await User.findOne({ id: userId });
-        if (!student) {
-            return res.status(404).json({ 
-                message: "Student not found",
-                success: false,
-            });
-        }
-
         let updatedUser = null;
         if (Object.keys(userUpdate).length > 0) {
             updatedUser = await User.findOneAndUpdate(
-                { id }, 
+                { id: userId }, 
                 userUpdate,
                 { new: true }
             );
@@ -198,7 +195,7 @@ export const updateStudent = async (req, res) => {
         let updatedStudent = null;
         if (Object.keys(studentUpdate).length > 0) {
             updatedStudent = await Student.findOneAndUpdate(
-                { userId: id },
+                { userId: userId },
                 studentUpdate,
                 { new: true }
             );

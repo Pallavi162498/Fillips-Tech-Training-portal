@@ -8,6 +8,7 @@ import studentRoutes from "./routes/student.route.js";
 import courseRoutes from "./routes/course.route.js";
 import batchRoutes from "./routes/batch.route.js";
 import classRoutes from "./routes/class.route.js";
+import attendanceRoutes from "./routes/attendance.route.js";
 
 const app = express();
 dotenv.config();
@@ -23,6 +24,7 @@ app.use("/api/student", studentRoutes);
 app.use("/api/course", courseRoutes);
 app.use("/api/batch", batchRoutes);
 app.use("/api/class", classRoutes);
+app.use("/api/attendance", attendanceRoutes);
 
 app.listen(PORT, () => 
     console.log(`Server is running on ${PORT}`)
