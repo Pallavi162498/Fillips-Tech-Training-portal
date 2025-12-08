@@ -3,8 +3,8 @@ import {getAllInstructor, updateInstructor, getInstructorById, deleteInstructor}
 const router = express.Router()
 
 router.get("/", getAllInstructor);
-router.put("/:id", updateInstructor);
-router.get("/:id", getInstructorById);
-router.delete("/:id", deleteInstructor);
+router.put("/:userId", updateInstructor);
+router.get("/:userId", getInstructorById);
+router.delete("/:userId", deleteInstructor);
 
 export default router;

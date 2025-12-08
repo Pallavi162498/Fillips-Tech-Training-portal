@@ -11,12 +11,16 @@ const instructorSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    courseId: [
+      {
+        type: String,
+        required: true, 
+      }
+    ],
     batchId: [
         {
           type: String,
-          ref: "Batch",
-          required: true,
-          unique: true,  
+          required: true, 
         }
     ],
     classId: [

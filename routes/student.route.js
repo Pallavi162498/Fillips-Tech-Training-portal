@@ -4,8 +4,8 @@ const router = express.Router()
 
 router.post("/enrollment", addEnrollment);
 router.get("/", getAllStudent);
-router.put("/:id", updateStudent);
-router.get("/:id", getStudentById);
-router.delete("/:id", deleteStudent);
+router.put("/:userId", updateStudent);
+router.get("/:userId", getStudentById);
+router.delete("/:userId", deleteStudent);
 
 export default router;
