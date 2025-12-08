@@ -1,4 +1,3 @@
-import { truncate } from "fs";
 import mongoose from "mongoose";
 
 const instructorSchema = new mongoose.Schema({
@@ -10,14 +9,14 @@ const instructorSchema = new mongoose.Schema({
     },
     specialization: {
         type: String,
-        required: tre
+        required: true
     },
     batchId: [
         {
-        type: String,
-        ref: "Batch",
-        required: true,
-        unique: true,  
+          type: String,
+          ref: "Batch",
+          required: true,
+          unique: true,  
         }
     ],
     module: [
