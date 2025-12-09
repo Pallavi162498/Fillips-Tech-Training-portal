@@ -1,6 +1,8 @@
 import User from "../models/user.model.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
+import Instructor from "../models/instructor.model.js";
+import Student from "../models/student.model.js";
 
 export const registerUser = async(req, res) => {
     try {
@@ -18,6 +20,15 @@ export const registerUser = async(req, res) => {
         }
         const newUser = new User(data);
         await newUser.save()
+
+        if (data.role === "Instructor") {
+            await Instructor.create({ userId: newUser.id });
+        }
+
+        if (data.role === "Student") {
+            await Student.create({ userId: newUser.id });
+        }
+       
         return res.status(201).json({
             message: "User registered successfully",
             success: true,

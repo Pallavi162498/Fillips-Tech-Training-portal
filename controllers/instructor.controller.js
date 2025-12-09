@@ -181,7 +181,7 @@ export const updateInstructor = async(req, res) => {
             const { userId } = req.params;
             const data = req.body;
 
-            const instructor = await User.findOne({ id: userId});
+            const instructor = await Instructor.findOne({userId})
             if (!instructor) {
                 return res.status(404).json({ 
                     message: "Instructor not found",
@@ -206,7 +206,7 @@ export const updateInstructor = async(req, res) => {
             let updatedUser = null;
             if (Object.keys(userUpdate).length > 0) {
                 updatedUser = await User.findOneAndUpdate(
-                    { id: userId }, 
+                    { _id: userId }, 
                     userUpdate,
                     { new: true }
                 );
@@ -215,7 +215,7 @@ export const updateInstructor = async(req, res) => {
             let updatedInstructor = null;
             if (Object.keys(instructorUpdate).length > 0) {
                 updatedInstructor = await Instructor.findOneAndUpdate(
-                    { userId: userId },
+                    { userId},
                     instructorUpdate,
                     { new: true }
                 );
