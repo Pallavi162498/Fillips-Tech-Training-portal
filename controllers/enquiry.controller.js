@@ -31,10 +31,12 @@ export const getAllEnquiry = async(req, res) => {
                 {name: {$regex: search, $options: "i"}},
                 {email: {$regex: search, $options: "i"}},
                 {phone: {$regex: search, $options: "i"}},
+                {id: {$regex: search, $options: "i"}},
             ]
         }
         const enquiry = await Enquiry.find(filter)
-        .select("id name email phone location")
+        .select("id name email phone location college course message status remark")
+        .sort({ createdAt: -1 })
         .skip((pageNum - 1) * limitNum)
         .limit(limitNum)
 
@@ -71,7 +73,7 @@ export const getAllEnquiry = async(req, res) => {
 export const getEnquiryById = async(req, res) => {
     try {
         const {id} = req.params;
-        const enquiry = await Enquiry.findOne({id}).select("id name email phone location");
+        const enquiry = await Enquiry.findOne({id}).select("id name email phone location college course message status remark");
         if(!enquiry)
         {
             return res.status(404).json({

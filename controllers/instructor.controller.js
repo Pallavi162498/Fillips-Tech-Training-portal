@@ -190,7 +190,7 @@ export const updateInstructor = async(req, res) => {
             }
     
             const userFields = ["firstName", "lastName", "email", "phone", "location"];
-            const instructorFields = ["specialization", "batchId", "module"];
+            const instructorFields = ["specialization", "batchId", "courseId", "classId"];
     
             const userUpdate = {};
             const instructorUpdate = {};
@@ -225,7 +225,7 @@ export const updateInstructor = async(req, res) => {
                 message: "Instructor updated successfully",
                 success: true,
                 data: {
-                    instructor,
+                    // instructor,
                     updatedUser,
                     updatedInstructor
                 }

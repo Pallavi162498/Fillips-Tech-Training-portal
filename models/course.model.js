@@ -1,10 +1,10 @@
 import mongoose from "mongoose";
-import {v4 as uuidv4} from "uuid";
-
+import generateUniqueId from "../utils/generateUniqueIdGenerator.js";
 const courseSchema = new mongoose.Schema({
     id: {
         type: String,
-        default: () => `course-${uuidv4()}`
+        default: () => generateUniqueId("COURSE"),
+        
     },
     courseName: {
         type: String,

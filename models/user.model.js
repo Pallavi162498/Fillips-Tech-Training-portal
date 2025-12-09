@@ -1,11 +1,11 @@
 import mongoose from "mongoose";
-import {v4 as uuidv4} from "uuid";
+import generateUniqueId from "../utils/generateUniqueIdGenerator.js";
 import bcrypt from "bcryptjs";
 
 const userSchema = new mongoose.Schema({
     id: {
         type: String,
-        default: () => `user-${uuidv4()}`,
+        default: () => generateUniqueId("USER"),
     },
     firstName: {
         type: String,

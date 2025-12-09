@@ -1,10 +1,10 @@
 import mongoose from "mongoose";
-import {v4 as uuidv4} from "uuid"
+import generateUniqueId from "../utils/generateUniqueIdGenerator.js";
 
 const batchSchema = new mongoose.Schema ({
     id: {
         type: String,
-        default: () => `batch-${uuidv4()}`
+        default: () => generateUniqueId("BATCH"),
     },
     batchName: {
         type: String,
