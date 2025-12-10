@@ -56,6 +56,7 @@ export const submitAssignment = async(req, res) => {
                 success: false,
             })
         }
+        assignment.submission.push({userId})
         await assignment.save();
     } catch (error) {
         return res.status(500).json({
@@ -68,6 +69,8 @@ export const submitAssignment = async(req, res) => {
 
 export const updateAssignment = async(req, res) => {
     try {
+        // const {id} = req.params
+        // const u
         
     } catch (error) {
         
