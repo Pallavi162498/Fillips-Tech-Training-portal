@@ -5,7 +5,6 @@ const classSchema = new mongoose.Schema({
     id: {
         type: String,
         default: () => generateUniqueId("CLASS"),
-        
     },
     moduleName: {
         type: String,

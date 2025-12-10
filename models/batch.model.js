@@ -52,7 +52,11 @@ const batchSchema = new mongoose.Schema ({
     capacity: {
         type: Number,
         required: true
-    }
+    },
+    totalStudent: {
+        type: Number,
+        required: true,
+    },
 }, {timestamps: true} )
 
 batchSchema.set('toJSON', {
