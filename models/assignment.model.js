@@ -14,18 +14,18 @@ const assignmentSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    title: {
-        type: String,
-        required: true
-    },
-    description: {
-        type: String,
-        required: true
-    },
     dueDate: {
         type: Date,
         required: true
 
+    },
+    question: {
+        type: String,
+        default: ""
+    },
+    answer: {
+        type: String,
+        default: ""
     },
     totalmarks: {
         type: Number,
@@ -36,11 +36,6 @@ const assignmentSchema = new mongoose.Schema({
         {
             userId: {
                 type: String,
-                required: true
-            },
-            submittedFile: {
-                type: String,
-                requitred: true
             },
             submissionDate: {
                 type: Date,
