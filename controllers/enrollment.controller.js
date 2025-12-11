@@ -1,6 +1,7 @@
 import Enrollment from "../models/enrollment.model.js";
 import Course from "../models/course.model.js";
 import Batch from "../models/batch.model.js";
+import Student from "../models/student.model.js";
 import autoGenerateCertificate from "../utils/autoGenerateCertificate.js";
 
 export const addEnrollment = async(req, res) => {
@@ -8,6 +9,7 @@ export const addEnrollment = async(req, res) => {
         const data = req.body
         const userId = req.user.id
         data.userId = userId
+
         const existingEnrollment = await Enrollment.findOne({userId: data.userId, courseId: data.courseId, batchId: data.batchId})
         if(existingEnrollment)
         {
@@ -15,6 +17,14 @@ export const addEnrollment = async(req, res) => {
                 message: "Enrollment already exists",
                 success: false
             });
+        }
+        const studentData = await Student.findOne({userId: data.userId});
+        if(!studentData)
+        {
+            return res.status(404).json({
+                message: "Student Not Found",
+                success: false,
+            })
         }
         const courseData = await Course.findOne({id: data.courseId})
         if(!courseData)
@@ -42,6 +52,9 @@ export const addEnrollment = async(req, res) => {
         }
         const newEnrollment = new Enrollment(data);
         await newEnrollment.save();
+
+        studentData.enrollmentId.push(newEnrollment.id);
+        await studentData.save();
 
         batchData.totalStudent = batchEnrollmentCount + 1;
         await batchData.save();

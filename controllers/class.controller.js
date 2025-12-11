@@ -1,11 +1,24 @@
 import Class from "../models/class.model.js"
+import Batch from "../models/batch.model.js"
 
 export const createClass = async(req, res) => {
     try {
         const data = req.body;
-        const newClass = new Class(data);
-        await newClass.save();
-        return res.status(201).json({
+        const batch = await Batch.findOne({id: data.batchId})
+        if(!batch)
+        {
+            return res.status(400).json({
+            message: "Batch not found",
+            success: false
+        })  
+        }
+            const newClass = new Class(data);
+            await newClass.save();
+
+            batch.classId.push(newClass.id);
+            await batch.save();
+            
+            return res.status(201).json({
             message: "Class created successfully",
             success: true,
             data: newClass

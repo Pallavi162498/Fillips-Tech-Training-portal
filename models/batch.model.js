@@ -13,7 +13,7 @@ const batchSchema = new mongoose.Schema ({
     },
     courseId: {
         type: String,
-        default: ""
+        required: true
     },
     instructorId: {
         type: String,

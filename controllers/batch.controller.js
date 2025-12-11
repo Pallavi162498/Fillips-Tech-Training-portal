@@ -1,8 +1,18 @@
-import Batch from "../models/batch.model.js"
+import Batch from "../models/batch.model.js";
+import Course from "../models/course.model.js";
 
 export const createBatch = async(req, res) => {
     try {
         const data = req.body;
+        const course = await Course.findOne({id: data.courseId})
+        if(!course)
+        {
+            return res.status(404).json({
+            message: "Course Not found",
+            success: false
+        })
+        }
+
         const existingBatch = await Batch.findOne({batchName: data.batchName});
         if(existingBatch)
         {
@@ -13,11 +23,16 @@ export const createBatch = async(req, res) => {
         }
         const newBatch = new Batch(data)
         await newBatch.save()
+
+        course.batchId.push(newBatch.id);
+        await course.save();
+        
         return res.status(201).json({
             message: "Batch created successfully",
             success: true,
             data: newBatch,
         }) 
+     
     } catch (error) {
         return res.status(500).json({
             message: "Internal Server Error",
@@ -54,7 +69,6 @@ export const getAllBatch = async(req, res) => {
                     as: "instructorData",
                 },
             },
-            { $unwind: { path: "$instructorData", preserveNullAndEmptyArrays: true } }, 
              { 
                 $lookup: {
                     from: "courses", 
@@ -64,6 +78,14 @@ export const getAllBatch = async(req, res) => {
                 },
             },
             { $unwind: { path: "$courseData", preserveNullAndEmptyArrays: true } }, 
+             {
+                $lookup: {
+                    from: "classes",
+                    localField: "classId",
+                    foreignField: "id",
+                    as: "classData",
+                },
+            }
         ];
 
         if(limitNum > 0)
@@ -85,7 +107,10 @@ export const getAllBatch = async(req, res) => {
                 endDate: 1,
                 totalStudent: 1,
                 courseName: "$courseData.courseName",
-                InstructorName: "$instructorData.firstName",
+                InstructorName: {
+                    $concat: [{ $arrayElemAt: ["$instructorData.firstName", 0] }," ",{ $arrayElemAt: ["$instructorData.lastName", 0] }]
+                },
+                classNames: "$classData.moduleName",
             }
         }) 
 

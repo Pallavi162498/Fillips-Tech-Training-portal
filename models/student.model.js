@@ -7,19 +7,15 @@ const studentSchema = new mongoose.Schema({
   required: true,
   unique: true
 },  
-  batchId: {
-    type: [String],
-    default: []    
+enrollmentId: {
+  type: [String],
+  default: []
+},
+mode: {
+  type: String,
+  enum: ["Online", "Offline"],
+  default: "Online"
   },
-  courseId: {
-    type: [String],
-    default: []     
-  },
-    mode: {
-        type: String,
-        enum: ["Online", "Offline"],
-        default: "Online"
-    },
 }, {timestamps: true});
 
 studentSchema.set('toJSON', {

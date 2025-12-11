@@ -1,55 +1,49 @@
-import Batch from "../models/batch.model.js"
 import User from "../models/user.model.js";
 import Student from "../models/student.model.js" 
-
-
-export const addEnrollment = async(req, res) => {
-    try {
-        
-    } catch (error) {
-        
-    }
-}
 
 export const getAllStudent = async(req, res) => {
     try {
         const {page = 1, limit = 10, search} = req.query;
         const pageNum = parseInt(page);
         const limitNum = parseInt(limit);
-        let filter = {};
-        if(search)
-        {
-
-        }
+       
         const pipeline = [
-            {$match: filter},
             {$sort: {createdAt: -1}},
             {
-
              $lookup: {
-                    from: "users", 
-                    localField: "userId",
+                    from: "enrollments", 
+                    localField: "enrollmentId",
                     foreignField: "id", 
-                    as: "userData",
+                    as: "enrollmentData",
                 },
+            },
+            {
+            $lookup: {
+                from: "courses",
+                localField: "enrollmentData.courseId",
+                foreignField: "id",
+                as: "courseInfo"
+                },
+            },
+            {$unwind: { path: "$courseInfo", preserveNullAndEmptyArrays: true }},
+            {
+            $lookup: {
+                from: "batches",
+                localField: "enrollmentData.batchId",
+                foreignField: "id",
+                as: "batchInfo"
+            }
+            },
+            {$unwind: { path: "$batchInfo", preserveNullAndEmptyArrays: true }},
+            {
+            $lookup: {
+                    from: "users",
+                    localField: "userId",
+                    foreignField: "id",
+                    as: "userData"
+                }
             },
             { $unwind: { path: "$userData", preserveNullAndEmptyArrays: true } },
-            {
-             $lookup: {
-                    from: "courses", 
-                    localField: "courseId",
-                    foreignField: "id", 
-                    as: "courseData",
-                },
-            },
-            {
-             $lookup: {
-                    from: "batches", 
-                    localField: "batchId",
-                    foreignField: "id", 
-                    as: "batchData",
-                },
-            },
         ]
         if(limitNum > 0)
         {
@@ -59,14 +53,30 @@ export const getAllStudent = async(req, res) => {
         pipeline.push({
             $project: {
                 _id: 0,
-                studentId: "$userData.id",
-                studentName: "$userData.firstname",
+                userId: 1,
+                studentFirstName: "$userData.firstName",
+                studentLastName: "$userData.lastName",
                 studentPhone: "$userData.phone",
                 studentEmail: "$userData.email",
                 studentLocation: "$userData.location",
-                courseName: "$courseData.courseName",
-                batchName: "$batchData.batchName",
+                enrollmentData: {
+                    $map: {
+                    input: "$enrollmentData",
+                    as: "en",
+                    in: {
+                        id: "$$en.id",
+                        enrollDate: "$$en.enrollDate",
+                        status: "$$en.status",
+                        courseStatus: "$$en.courseStatus",
+                        courseName: "$courseInfo.courseName",
+                        // courseId: "$$en.courseId",
+                        batchName: "$batchInfo.batchName",
+                        batchTiming: "$batchInfo.batchTiming",
+                        // batchId: "$$en.batchId"
+                    }
+                }
             }
+        }
         });
         const students = await Student.aggregate(pipeline)
         const totalStudents = await Student.countDocuments()
@@ -104,46 +114,83 @@ export const getStudentById = async(req, res) => {
      try {
         const {userId} = req.params;
         const studentData = await Student.findOne({userId})
+        if(!studentData)
+        {
+            return res.status(404).json({
+                message: "Student Not Found",
+                success: false,
+            })
+        }
         const pipeline = [
-            {$match: {userId}},
+            {$sort: {createdAt: -1}},
             {
-
              $lookup: {
-                    from: "users", 
-                    localField: "userId",
+                    from: "enrollments", 
+                    localField: "enrollmentId",
                     foreignField: "id", 
-                    as: "userData",
+                    as: "enrollmentData",
                 },
+            },
+            {
+            $lookup: {
+                from: "courses",
+                localField: "enrollmentData.courseId",
+                foreignField: "id",
+                as: "courseInfo"
+                },
+            },
+            {$unwind: { path: "$courseInfo", preserveNullAndEmptyArrays: true }},
+            {
+            $lookup: {
+                from: "batches",
+                localField: "enrollmentData.batchId",
+                foreignField: "id",
+                as: "batchInfo"
+            }
+            },
+            {$unwind: { path: "$batchInfo", preserveNullAndEmptyArrays: true }},
+            {
+            $lookup: {
+                    from: "users",
+                    localField: "userId",
+                    foreignField: "id",
+                    as: "userData"
+                }
             },
             { $unwind: { path: "$userData", preserveNullAndEmptyArrays: true } },
-            {
-             $lookup: {
-                    from: "courses", 
-                    localField: "courseId",
-                    foreignField: "id", 
-                    as: "courseData",
-                },
-            },
-            {
-             $lookup: {
-                    from: "batches", 
-                    localField: "batchId",
-                    foreignField: "id", 
-                    as: "batchData",
-                },
-            },
         ]
+        if(limitNum > 0)
+        {
+            pipeline.push({$skip: (pageNum - 1) * limitNum});
+            pipeline.push({$limit: limit});
+        }
         pipeline.push({
             $project: {
                 _id: 0,
-                studentId: "$userData.id",
-                studentName: "$userData.firstname",
+                userId: 1,
+                studentFirstName: "$userData.firstName",
+                studentLastName: "$userData.lastName",
                 studentPhone: "$userData.phone",
                 studentEmail: "$userData.email",
                 studentLocation: "$userData.location",
-                courseName: "$courseData.courseName",
-                batchName: "$batchData.batchName",
+                enrollmentData: {
+                    $map: {
+                    input: "$enrollmentData",
+                    as: "en",
+                    in: {
+                        id: "$$en.id",
+                        enrollDate: "$$en.enrollDate",
+                        status: "$$en.status",
+                        courseStatus: "$$en.courseStatus",
+                        courseName: "$courseInfo.courseName",
+                        // courseId: "$$en.courseId",
+                        batchName: "$batchInfo.batchName",
+                        batchTiming: "$batchInfo.batchTiming",
+                        // batchId: "$$en.batchId"
+                    }
+                }
             }
+        }
         });
         const students = await Student.aggregate(pipeline)
 
@@ -174,7 +221,7 @@ export const updateStudent = async (req, res) => {
             });
         }
         const userFields = ["firstName", "lastName", "email", "phone", "location"];
-        const studentFields = ["batchId", "courseId", "mode", "status"];
+        const studentFields = ["mode"];
 
         const userUpdate = {};
         const studentUpdate = {};
