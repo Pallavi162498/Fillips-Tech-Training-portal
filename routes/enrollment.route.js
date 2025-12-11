@@ -4,10 +4,10 @@ import { authenticate } from "../middlewares/authenticate.middleware.js";
 const router = express.Router()
 
 router.post("/", authenticate, addEnrollment);
-router.get("/", getAllEnrollment);
-router.put("/completeCourse/:id", completeCourse);
-router.get("/:id", getEnrollmentById);
-router.put("/:id", updateEnrollment);
-router.delete("/:id", deleteEnrollment);
+router.get("/", authenticate, getAllEnrollment);
+router.put("/completeCourse/:id", authenticate, completeCourse);
+router.get("/:id", authenticate, getEnrollmentById);
+router.put("/:id", authenticate, updateEnrollment);
+router.delete("/:id", authenticate, deleteEnrollment);
 
 export default router

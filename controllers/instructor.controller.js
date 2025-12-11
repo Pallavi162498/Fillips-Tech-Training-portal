@@ -63,7 +63,7 @@ export const getAllInstructor = async(req, res) => {
                 instructorPhone: "$userData.phone",
                 courseName: "$courseData.courseName",
                 batchName: "$batchData.batchName",
-                className: "classData.moduleName"
+                className: "$classData.moduleName"
             }
         });
 
@@ -156,7 +156,7 @@ export const getInstructorById = async(req, res) => {
                 instructorLocation: "$userData.location",
                 courseName: "$courseData.courseName",
                 batchName: "$batchData.batchName",
-                className: "classData.moduleName"
+                className: "$classData.moduleName"
             }
         });
 
