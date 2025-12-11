@@ -63,7 +63,6 @@ export const getAllClasses = async(req, res) => {
                     as: "instructorData",
                 },
             },
-            { $unwind: { path: "$instructorData", preserveNullAndEmptyArrays: true } }, 
         ]
 
         if(limitNum > 0)
@@ -79,8 +78,10 @@ export const getAllClasses = async(req, res) => {
                 moduleName: 1,
                 classTime: 1,
                 courseName: "$courseData.courseName",
-                batchName: "$batchData.batchame",
-                InstructorName: "$instructorData.firstName"
+                batchName: "$batchData.batchName",
+                InstructorName: {
+                    $concat: [{ $arrayElemAt: ["$instructorData.firstName", 0] }," ",{ $arrayElemAt: ["$instructorData.lastName", 0] }]
+                }
             }
         });
 
@@ -156,7 +157,6 @@ export const getClassById = async(req, res) => {
                     as: "instructorData",
                 },
             },
-            { $unwind: { path: "$instructorData", preserveNullAndEmptyArrays: true } }, 
         ]
         pipeline.push({
             $project: {
@@ -165,8 +165,10 @@ export const getClassById = async(req, res) => {
                 moduleName: 1,
                 classTime: 1,
                 courseName: "$courseData.courseName",
-                batchName: "$batchData.batchame",
-                InstructorName: "$instructorData.firstName"
+                batchName: "$batchData.batchName",
+                InstructorName: {
+                    $concat: [{ $arrayElemAt: ["$instructorData.firstName", 0] }," ",{ $arrayElemAt: ["$instructorData.lastName", 0] }]
+                }
             }
         });
 

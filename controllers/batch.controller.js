@@ -81,6 +81,9 @@ export const getAllBatch = async(req, res) => {
                 mode: 1,
                 status: 1,
                 capacity: 1,
+                startDate: 1,
+                endDate: 1,
+                totalStudent: 1,
                 courseName: "$courseData.courseName",
                 InstructorName: "$instructorData.firstName",
             }
@@ -137,7 +140,6 @@ export const getBatchById = async(req, res) => {
                     as: "instructorData",
                 },
             },
-            { $unwind: { path: "$instructorData", preserveNullAndEmptyArrays: true } }, 
              { 
                 $lookup: {
                     from: "courses", 
@@ -147,6 +149,14 @@ export const getBatchById = async(req, res) => {
                 },
             },
             { $unwind: { path: "$courseData", preserveNullAndEmptyArrays: true } }, 
+            {
+                $lookup: {
+                    from: "classes",
+                    localField: "classId",
+                    foreignField: "id",
+                    as: "classData",
+                },
+            }
         ];
 
         pipeline.push({
@@ -158,8 +168,15 @@ export const getBatchById = async(req, res) => {
                 mode: 1,
                 status: 1,
                 capacity: 1,
+                startDate: 1,
+                endDate: 1,
+                totalStudent: 1,
                 courseName: "$courseData.courseName",
-                InstructorName: "$instructorData.firstName",
+                InstructorName: {
+                    $concat: [{ $arrayElemAt: ["$instructorData.firstName", 0] }," ",{ $arrayElemAt: ["$instructorData.lastName", 0] }]
+                },
+                classNames: "$classData.moduleName",
+                
             }
         }) 
 

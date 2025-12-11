@@ -18,8 +18,8 @@ const courseSchema = new mongoose.Schema({
         required: true,
     },
     batchId: {
-        type: String,
-        default: ""
+        type: [String],
+        default: []
     },
     totalEnrollment: {
         type: String,

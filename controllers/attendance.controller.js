@@ -2,7 +2,7 @@ import Attendance from "../models/attendance.model.js";
 
 export const markAttendance = async(req, res) => {
     try {
-        const {userId} = req.params;
+        const userId = req.user.id;
 
         const today = new Date().toISOString().split("T")[0];
         const alreadyMarked = await Attendance.findOne({userId, date: today});

@@ -250,6 +250,7 @@ export const deleteInstructor = async(req, res) => {
                 success: false,
             })
         }
+        await Instructor.findOneAndDelete({ userId: id });
         return res.status(200).json({
             message: `${deletedInstructor?.firstName} is deleted successfully`,
             success: true,

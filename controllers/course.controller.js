@@ -35,11 +35,36 @@ export const getAllCourses = async(req, res) => {
             {courseName: {$regex: search, $options: "i"}},
         ]
     }
-    const course = await Course.find(filter)
-    .select("id courseName courseDuration coursePrice")
-    .skip((pageNum - 1) * limitNum )
-    .limit(limitNum)
+    const pipeline = [
+        {$match: filter},
+        {$sort: {createdAt: -1}},
+        { 
+                $lookup: {
+                    from: "batches", 
+                    localField: "batchId",
+                    foreignField: "id", 
+                    as: "batchData",
+                },
+            },
+    ]
+    if(limitNum > 0)
+    {
+        pipeline.push({$skip: (pageNum - 1) * limitNum});
+        pipeline.push({$limit: limitNum})
+    }
+    pipeline.push({
+        $project: {
+            _id: 0,
+            id: 1,
+            courseName: 1,
+            courseDuration: 1,
+            coursePrice: 1,
+            batchNames: "$batchData.batchName",
+            totalEnrollment: 1,
+        }
+    })
 
+    const course = await Course.aggregate(pipeline)
     const totalCourse = await Course.countDocuments()
 
     if(course.length === 0)
@@ -72,14 +97,41 @@ export const getAllCourses = async(req, res) => {
 export const getCourseById = async(req, res) => {
     try {
         const {id} = req.params;
-        const course = await Course.findOne({id}).select("id courseName courseDuration coursePrice")
-        if(!course)
+        const courseData = await Course.findOne({id})
+        if(!courseData)
         {
             return res.status(404).json({
                 message: "Course Not Found",
                 success: false
             });
         }
+
+        const pipeline = [
+        {$match: {id}},
+        {$sort: {createdAt: -1}},
+        { 
+                $lookup: {
+                    from: "batches", 
+                    localField: "batchId",
+                    foreignField: "id", 
+                    as: "batchData",
+                },
+            },
+    ]
+   
+    pipeline.push({
+        $project: {
+            _id: 0,
+            id: 1,
+            courseName: 1,
+            courseDuration: 1,
+            coursePrice: 1,
+            batchNames: "$batchData.batchName",
+            totalEnrollment: 1,
+        }
+    })
+
+    const course = await Course.aggregate(pipeline)
        return res.status(200).json({
             message: "Course Fetched Successfully",
             data: course,
@@ -93,10 +145,9 @@ export const getCourseById = async(req, res) => {
     }
 }
 
-
 export const updateCourse = async(req, res) => {
     try {
-        const {id} = req.parsms;
+        const {id} = req.params;
         const updatedData = req.body;
         const updatedCourse = await Course.findOneAndUpdate({id}, updatedData, {new: true});
         if(!updatedCourse)
@@ -131,7 +182,7 @@ export const deleteCourse = async(req, res) => {
                 success: false
             });
         }
-        return res.status.json({
+        return res.status(200).json({
             message: `${deletedCourse?.courseName} is deleted successfully`,
             success: true
         });

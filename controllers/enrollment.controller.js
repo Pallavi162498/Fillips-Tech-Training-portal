@@ -1,6 +1,7 @@
 import Enrollment from "../models/enrollment.model.js";
 import Course from "../models/course.model.js";
 import Batch from "../models/batch.model.js";
+import autoGenerateCertificate from "../utils/autoGenerateCertificate.js";
 
 export const addEnrollment = async(req, res) => {
     try {
@@ -63,6 +64,41 @@ export const addEnrollment = async(req, res) => {
         error: error.message,
         success: false,
     }); 
+    }
+}
+
+export const completeCourse = async(req, res) => {
+    try {
+        const {id} = req.params;
+        const userId = req.user.id;
+
+        const enrollment = await Enrollment.findOne({id, userId});
+        if(!enrollment)
+        {
+            return res.status(404).json({
+                message: "Enrollment not found for this User",
+                success: false,
+            })
+        }
+        enrollment.status = "Completed";
+        enrollment.courseStatus = "Completed";
+        await enrollment.save();
+
+        const certificate = await autoGenerateCertificate(enrollment.userId, enrollment.courseId);
+        return res.status(200).json({
+            message: "Course Completed & certificate generated!",
+            succes: true,
+            data: {
+                enrollment,
+                certificate
+            }
+        })
+    } catch (error) {
+        return res.status(500).json({
+            message: "Internal Server error",
+            success: false,
+            error: error.message
+        })
     }
 }
 

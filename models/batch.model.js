@@ -31,6 +31,10 @@ const batchSchema = new mongoose.Schema ({
         type: Date,
         required: true,
     },
+    classId: {
+        type: [String],
+        default: []
+    },
     endDate: {
         type: Date,
         required: true,
@@ -45,17 +49,13 @@ const batchSchema = new mongoose.Schema ({
         enum: ["Ongoing", "Will Start"],
         required: true,
     },
-    // totalEnrolledStudent: {
-    //     type: Number,
-    //     default: ""
-    // },
     capacity: {
         type: Number,
         required: true
     },
     totalStudent: {
         type: Number,
-        required: true,
+        default: 0
     },
 }, {timestamps: true} )
 
