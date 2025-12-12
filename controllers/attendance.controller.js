@@ -69,7 +69,7 @@ export const getAllAttendance = async(req, res) => {
             $project: {
                 _id: 0,
                 id: 1,
-                userId: "$userData.id",
+                userId: 1,
                 userName: {
                     $concat: [{ $arrayElemAt: ["$userData.firstName", 0] }," ",{ $arrayElemAt: ["$userData.lastName", 0] }]
                 },
@@ -135,7 +135,7 @@ export const getAttendanceById = async(req, res) => {
             $project: {
                 _id: 0,
                 id: 1,
-                userId: "$userData.id",
+                userId: 1,
                 userName: {
                     $concat: [{ $arrayElemAt: ["$userData.firstName", 0] }," ",{ $arrayElemAt: ["$userData.lastName", 0] }]
                 },
