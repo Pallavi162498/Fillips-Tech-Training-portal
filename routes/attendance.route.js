@@ -5,6 +5,6 @@ const router = express.Router()
 
 router.post("/:userId", authenticate, markAttendance);
 router.get("/", authenticate, authorize("Admin"), getAllAttendance);
-router.get("/:userId", authenticate, getAttendanceById)
+router.get("/", authenticate, getAttendanceById)
 
 export default router;

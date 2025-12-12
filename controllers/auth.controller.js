@@ -29,8 +29,6 @@ export const registerUser = async(req, res) => {
         if (data.role === "Student") {
             await Student.create({ userId: newUser.id });
         }
-
-        await Attendance.create({userId: newUser.id});
        
         return res.status(201).json({
             message: "User registered successfully",

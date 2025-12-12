@@ -52,10 +52,9 @@ export const getAllAttendance = async(req, res) => {
     }
 }
 
-
 export const getAttendanceById = async(req, res) => {
     try {
-        const {userId} = req.params;
+        const {userId} = req.user.id;
         const attendancedata = await Attendance.findOne({userId})
         if(!attendancedata)
         {
