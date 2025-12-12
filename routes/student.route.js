@@ -1,11 +1,11 @@
 import express from "express"
 import {updateStudent, getAllStudent, getStudentById, deleteStudent} from "../controllers/student.controller.js"
-import { authenticate } from "../middlewares/authenticate.middleware.js";
+import { authenticate, authorize } from "../middlewares/authenticate.middleware.js";
 const router = express.Router()
 
-router.get("/", authenticate, getAllStudent);
-router.put("/:userId", authenticate, updateStudent);
-router.get("/:userId", authenticate, getStudentById);
-router.delete("/:userId", authenticate, deleteStudent);
+router.get("/", authenticate, authorize("Admin"), getAllStudent);
+router.put("/:userId", authenticate, authorize("Admin", "Student"), updateStudent);
+router.get("/:userId", authenticate, authorize("Admin", "Student"), getStudentById);
+router.delete("/:userId", authenticate, authorize("Admin"), deleteStudent);
 
 export default router;

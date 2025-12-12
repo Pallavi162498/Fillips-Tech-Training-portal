@@ -95,3 +95,29 @@ export const getEnquiryById = async(req, res) => {
         
     }
 } 
+
+export const updateEnquiry = async(req, res) => {
+    try {
+        const {id} = req.params;
+        const updatedData = req.body;
+        const updatedEnquiry = await Enquiry.findOneAndUpdate({id}, updatedData, {new: true});
+        if(!updatedEnquiry)
+        {
+            return res.status(404).json({
+                message: "Enquiry not found",
+                success: false
+            });
+        }
+        return res.status(200).json({
+            message: "Enquiry Updated successfully",
+            success: false,
+            data: updatedEnquiry
+        })
+    } catch (error) {
+        return res.status(500).json({
+            message: "Internal Server Error",
+            success: false,
+            error: error.message,
+        })
+    }
+}
