@@ -22,7 +22,8 @@ const app = express();
 const corsOptions = {
   origin: function (origin, callback) {
     const allowedOrigins = [
-      "http://localhost:5173"
+      "http://localhost:5173",
+      "https://nextindia-training.fillipsoftware.com/"
     ];
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);

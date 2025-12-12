@@ -3,7 +3,6 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import Instructor from "../models/instructor.model.js";
 import Student from "../models/student.model.js";
-import Attendance from "../models/attendance.model.js";
 
 export const registerUser = async(req, res) => {
     try {
