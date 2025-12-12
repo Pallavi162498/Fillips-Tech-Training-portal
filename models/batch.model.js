@@ -17,7 +17,7 @@ const batchSchema = new mongoose.Schema ({
     },
     instructorId: {
         type: String,
-        default: ""
+        required: true
     },
     studentId: {
         type: String,

@@ -43,10 +43,9 @@ export const getAllInstructor = async(req, res) => {
                     from: "users", 
                     localField: "userId",
                     foreignField: "id", 
-                    as: "userData",
+                    as: "instructorData",
                 },
             },
-            { $unwind: { path: "$userData", preserveNullAndEmptyArrays: true } },
         ]
         if(limitNum > 0)
         {
@@ -56,11 +55,13 @@ export const getAllInstructor = async(req, res) => {
         piepline.push({
             $project: {
                 _id: 0,
+                userId: 1,
                 specialization: 1,
-                userId: "$userData.id",
-                instructorName: "$userData.firstName",
-                instructorEmail: "$userData.email",
-                instructorPhone: "$userData.phone",
+                InstructorName: {
+                    $concat: [{ $arrayElemAt: ["$instructorData.firstName", 0] }," ",{ $arrayElemAt: ["$instructorData.lastName", 0] }]
+                },
+                instructorEmail: "$instructorData.email",
+                instructorPhone: "$instructorData.phone",
                 courseName: "$courseData.courseName",
                 batchName: "$batchData.batchName",
                 className: "$classData.moduleName"

@@ -1,11 +1,28 @@
 import Course from "../models/course.model.js";
 import Batch from "../models/batch.model.js";
+import Instructor from "../models/instructor.model.js";
 
 export const addCourse = async(req, res) => {
     try {
         const data = req.body;
+        const instructor = await Instructor.findOne({userId: data.instructorId});
+        if(!instructor)
+        {
+            return res.status(404).json({
+                message: "Instructor not found",
+                success: false,
+            })
+        }
         const newCourse = new Course(data)
         await newCourse.save();
+
+        if (!Array.isArray(instructor.courseId)) 
+        {
+        instructor.courseId = [];
+        }
+        instructor.courseId.push(newCourse.id);
+        await instructor.save();
+
         return res.status(201).json({
             message: "Course created successfully",
             success: true,
@@ -46,6 +63,14 @@ export const getAllCourses = async(req, res) => {
                     as: "batchData",
                 },
             },
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "instructorId",
+                    foreignField: "id",
+                    as: "instructorData",
+                },
+            },
     ]
     if(limitNum > 0)
     {
@@ -60,6 +85,9 @@ export const getAllCourses = async(req, res) => {
             courseDuration: 1,
             coursePrice: 1,
             batchNames: "$batchData.batchName",
+            InstructorName: {
+                    $concat: [{ $arrayElemAt: ["$instructorData.firstName", 0] }," ",{ $arrayElemAt: ["$instructorData.lastName", 0] }]
+                },
             totalEnrollment: 1,
         }
     })
@@ -117,6 +145,14 @@ export const getCourseById = async(req, res) => {
                     as: "batchData",
                 },
             },
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "instructorId",
+                    foreignField: "id",
+                    as: "instructorData",
+                },
+            },
     ]
    
     pipeline.push({
@@ -127,6 +163,9 @@ export const getCourseById = async(req, res) => {
             courseDuration: 1,
             coursePrice: 1,
             batchNames: "$batchData.batchName",
+            InstructorName: {
+                    $concat: [{ $arrayElemAt: ["$instructorData.firstName", 0] }," ",{ $arrayElemAt: ["$instructorData.lastName", 0] }]
+                },
             totalEnrollment: 1,
         }
     })

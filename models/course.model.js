@@ -17,6 +17,10 @@ const courseSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    instructorId: {
+      type: String,
+      required: true
+    },
     batchId: {
         type: [String],
         default: []
@@ -25,6 +29,18 @@ const courseSchema = new mongoose.Schema({
         type: String,
         default: 0
     },
+    courseSyllabus: [
+        {
+            moduleName: {
+                type: String,
+                required: true,
+            },
+            moduleDetails: {
+                type: String,
+                required: true
+            },
+        }
+    ]
 }, {timestamps: true});
 
 courseSchema.set('toJSON', {

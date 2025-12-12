@@ -1,5 +1,6 @@
 import Batch from "../models/batch.model.js";
 import Course from "../models/course.model.js";
+import Instructor from "../models/instructor.model.js";
 
 export const createBatch = async(req, res) => {
     try {
@@ -12,7 +13,14 @@ export const createBatch = async(req, res) => {
             success: false
         })
         }
-
+        const instructor = await Instructor.findOne({userId: data.instructorId})
+        if(!instructor)
+        {
+            return res.status(404).json({
+                message: "Instructor not found",
+                success: false,
+            })
+        }
         const existingBatch = await Batch.findOne({batchName: data.batchName});
         if(existingBatch)
         {
@@ -24,9 +32,20 @@ export const createBatch = async(req, res) => {
         const newBatch = new Batch(data)
         await newBatch.save()
 
+        if (!Array.isArray(course.batchId)) 
+        {
+            course.batchId = [];
+        }
         course.batchId.push(newBatch.id);
         await course.save();
-        
+
+        if (!Array.isArray(instructor.batchId)) 
+        {
+        instructor.batchId = [];
+        }
+        instructor.batchId.push(newBatch.id);
+        await instructor.save()
+
         return res.status(201).json({
             message: "Batch created successfully",
             success: true,
@@ -218,7 +237,6 @@ export const getBatchById = async(req, res) => {
         })
     }
 }
-
 
 export const updatebatch = async(req, res) => {
     try {
