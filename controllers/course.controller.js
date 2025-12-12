@@ -1,10 +1,18 @@
 import Course from "../models/course.model.js";
-import Batch from "../models/batch.model.js";
 import Instructor from "../models/instructor.model.js";
+import CourseCategory from "../models/courseCategory.model.js";
 
 export const addCourse = async(req, res) => {
     try {
         const data = req.body;
+        const coursecategory = await CourseCategory.findOne({id: data.courseCategoryId});
+        if(!coursecategory)
+        {
+            return res.status(404).json({
+                message: "Course category not found",
+                success: false
+            });
+        }
         const instructor = await Instructor.findOne({userId: data.instructorId});
         if(!instructor)
         {
@@ -71,6 +79,15 @@ export const getAllCourses = async(req, res) => {
                     as: "instructorData",
                 },
             },
+            {
+                $lookup: {
+                    from: "coursecategories",
+                    localField: "courseCategoryId",
+                    foreignField: "id",
+                    as: "courseCategoryData",
+                },
+            },
+            { $unwind: { path: "$courseCategoryData", preserveNullAndEmptyArrays: true } },
     ]
     if(limitNum > 0)
     {
@@ -81,6 +98,7 @@ export const getAllCourses = async(req, res) => {
         $project: {
             _id: 0,
             id: 1,
+            courseCategoryName: "$courseCategoryData.name",
             courseName: 1,
             courseDuration: 1,
             coursePrice: 1,
@@ -154,12 +172,22 @@ export const getCourseById = async(req, res) => {
                     as: "instructorData",
                 },
             },
+            {
+                $lookup: {
+                    from: "coursecategories",
+                    localField: "courseCategoryId",
+                    foreignField: "id",
+                    as: "courseCategoryData",
+                },
+            },
+            { $unwind: { path: "$courseCategoryData", preserveNullAndEmptyArrays: true } },
     ]
    
     pipeline.push({
         $project: {
             _id: 0,
             id: 1,
+            courseCategoryName: "$courseCategoryData.name",
             courseName: 1,
             courseDuration: 1,
             coursePrice: 1,

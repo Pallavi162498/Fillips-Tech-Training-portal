@@ -16,6 +16,7 @@ import enrollmentRoutes from "./routes/enrollment.route.js";
 // import assignmentRoutes from "./routes/assignment.route.js";
 // import marksheetRoutes from "./routes/marksheet.route.js";
 import certificateRoutes from "./routes/certificate.route.js";
+import courseCategoryRoutes from "./routes/courseCategory.route.js";
 
 const app = express();
 
@@ -51,6 +52,7 @@ connectDB()
 app.use("/api/auth", authRoutes);
 app.use("/api/instructor", instructorRoutes);
 app.use("/api/student", studentRoutes);
+app.use("/api/course-category", courseCategoryRoutes);
 app.use("/api/course", courseRoutes);
 app.use("/api/batch", batchRoutes);
 app.use("/api/class", classRoutes);
@@ -60,6 +62,7 @@ app.use("/api/enrollment", enrollmentRoutes);
 // app.use("/api/assignment", assignmentRoutes);
 // app.use("/api/marksheet", marksheetRoutes);
 app.use("/api/certificate", certificateRoutes);
+
 
 app.listen(PORT, () => 
     console.log(`Server is running on ${PORT}`)

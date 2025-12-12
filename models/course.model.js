@@ -5,6 +5,10 @@ const courseSchema = new mongoose.Schema({
         type: String,
         default: () => generateUniqueId("COURSE"),
     },
+    courseCategoryId: {
+        type: String,
+        required: true,
+    },
     courseName: {
         type: String,
         required: true,
