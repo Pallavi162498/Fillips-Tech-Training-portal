@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import Instructor from "../models/instructor.model.js";
 import Student from "../models/student.model.js";
+import Attendance from "../models/attendance.model.js";
 
 export const registerUser = async(req, res) => {
     try {
@@ -28,6 +29,8 @@ export const registerUser = async(req, res) => {
         if (data.role === "Student") {
             await Student.create({ userId: newUser.id });
         }
+
+        await Attendance.create({userId: newUser.id});
        
         return res.status(201).json({
             message: "User registered successfully",
