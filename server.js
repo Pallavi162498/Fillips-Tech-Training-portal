@@ -19,8 +19,12 @@ import certificateRoutes from "./routes/certificate.route.js";
 
 const app = express();
 
+const isDevelopment = process.env.NODE_ENV !== "production";
 const corsOptions = {
   origin: function (origin, callback) {
+     if (isDevelopment) {
+      return callback(null, true);
+    }
     const allowedOrigins = [
       "http://localhost:5173",
       "https://nextindia-training.fillipsoftware.com/"
