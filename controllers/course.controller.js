@@ -84,6 +84,7 @@ export const getAllCourses = async(req, res) => {
             courseName: 1,
             courseDuration: 1,
             coursePrice: 1,
+            courseSyllabus: 1,
             batchNames: "$batchData.batchName",
             InstructorName: {
                     $concat: [{ $arrayElemAt: ["$instructorData.firstName", 0] }," ",{ $arrayElemAt: ["$instructorData.lastName", 0] }]
@@ -162,6 +163,7 @@ export const getCourseById = async(req, res) => {
             courseName: 1,
             courseDuration: 1,
             coursePrice: 1,
+            courseSyllabus: 1,
             batchNames: "$batchData.batchName",
             InstructorName: {
                     $concat: [{ $arrayElemAt: ["$instructorData.firstName", 0] }," ",{ $arrayElemAt: ["$instructorData.lastName", 0] }]
