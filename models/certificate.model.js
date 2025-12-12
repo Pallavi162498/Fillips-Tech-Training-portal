@@ -23,5 +23,12 @@ const certificateSchema = new mongoose.Schema({
         required: true
     },
 }, {timestamps: true});
+certificateSchema.set('toJSON', {
+  transform: (doc, ret) => {
+    delete ret._id;
+    delete ret.__v;
+    return ret;
+  }
+});
 
 export default mongoose.model("Certificate", certificateSchema);

@@ -32,4 +32,12 @@ const enrollmentSchema = new mongoose.Schema({
     }
 }, {timestamps: true})
 
+enrollmentSchema.set('toJSON', {
+  transform: (doc, ret) => {
+    delete ret._id;
+    delete ret.__v;
+    return ret;
+  }
+});
+
 export default mongoose.model("Enrollment", enrollmentSchema);

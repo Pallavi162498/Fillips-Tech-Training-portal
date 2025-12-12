@@ -13,10 +13,11 @@ import classRoutes from "./routes/class.route.js";
 import attendanceRoutes from "./routes/attendance.route.js";
 import enquiryRoutes from "./routes/enquiry.route.js";
 import enrollmentRoutes from "./routes/enrollment.route.js";
-// import assignmentRoutes from "./routes/assignment.route.js";
-// import marksheetRoutes from "./routes/marksheet.route.js";
 import certificateRoutes from "./routes/certificate.route.js";
 import courseCategoryRoutes from "./routes/courseCategory.route.js";
+
+// import assignmentRoutes from "./routes/assignment.route.js";
+// import marksheetRoutes from "./routes/marksheet.route.js";
 
 const app = express();
 
@@ -59,9 +60,10 @@ app.use("/api/class", classRoutes);
 app.use("/api/attendance", attendanceRoutes);
 app.use("/api/enquiry", enquiryRoutes);
 app.use("/api/enrollment", enrollmentRoutes);
+app.use("/api/certificate", certificateRoutes);
+
 // app.use("/api/assignment", assignmentRoutes);
 // app.use("/api/marksheet", marksheetRoutes);
-app.use("/api/certificate", certificateRoutes);
 
 
 app.listen(PORT, () => 

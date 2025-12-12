@@ -16,6 +16,14 @@ const attendanceSchema = new mongoose.Schema({
     }
 }, {timestamps: true});
 
+attendanceSchema.set('toJSON', {
+  transform: (doc, ret) => {
+    delete ret._id;
+    delete ret.__v;
+    return ret;
+  }
+});
+
 attendanceSchema.index({ userId: 1, date: 1 }, { unique: true });
 
 export default mongoose.model("Attendance", attendanceSchema);
